@@ -241,7 +241,7 @@
             const jsonData = JSON.stringify(icpData, null, 2);
 
             // Cria o nome do arquivo
-            const fileName = ICP_${businessType.replace(/ /g, "_")}.json;
+            const fileName = `ICP_${businessType.replace(/ /g, "_")}.json`;
 
             // Cria um link para download
             const blob = new Blob([jsonData], { type: 'application/json' });
