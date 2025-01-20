@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferramenta ICP - Definir Perfil do Cliente Ideal</title>
+    <style>
+        /* CSS (Estilização do Formulário) */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px; /* Adicionado padding para espaçamento */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Alinhar ao topo */
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .result h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        #resultText, #messageText {
+            font-size: 16px;
+            line-height: 1.6;
+            white-space: pre-wrap; /* Mantém a formatação do texto */
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .message h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ferramenta ICP - Definir Perfil do Cliente Ideal</h1>
+        
+        <!-- Botão para Carregar JSON -->
+        <button id="loadJsonButton">Carregar JSON</button>
+
+        <!-- Formulário ICP -->
+        <form id="icpForm">
+            <!-- Tipo de Negócio -->
+            <label for="businessType">Tipo de Negócio:</label>
+            <input type="text" id="businessType" name="businessType" placeholder="Ex: E-commerce, Educação, Consultoria, Saúde, Tecnologia" required>
+
+            <!-- Cargo do Tomador de Decisão -->
+            <label for="decisionMaker">Cargo do Tomador de Decisão:</label>
+            <input type="text" id="decisionMaker" name="decisionMaker" placeholder="Ex: CEO, Gerente de Operações, Diretor de TI, CMO" required>
+
+            <!-- Tamanho da Empresa -->
+            <label for="companySize">Tamanho da Empresa:</label>
+            <input type="text" id="companySize" name="companySize" placeholder="Ex: 10-50 funcionários, 50-200 funcionários, 200-500 funcionários" required>
+
+            <!-- Localização -->
+            <label for="location">Localização/Região:</label>
+            <input type="text" id="location" name="location" placeholder="Ex: Brasil, São Paulo, América Latina, Global" required>
+
+            <!-- Objetivo do Negócio -->
+            <label for="businessGoal">Objetivo do Negócio:</label>
+            <input type="text" id="businessGoal" name="businessGoal" placeholder="Ex: Aumentar receita, Reduzir custos, Melhorar eficiência, Expandir mercado" required>
+
+            <!-- Soluções Necessárias -->
+            <label for="solutions">Soluções Necessárias:</label>
+            <input type="text" id="solutions" name="solutions" placeholder="Ex: Gestão de conhecimento, Automação de processos, Menus interativos, Treinamentos online" required>
+
+            <!-- Resultado Financeiro Desejado -->
+            <label for="financialResult">Resultado Financeiro Desejado:</label>
+            <input type="text" id="financialResult" name="financialResult" placeholder="Ex: Aumentar receita em 20%, Reduzir custos operacionais, Triplicar produtividade" required>
+
+            <!-- Botão de Envio -->
+            <button type="submit">Gerar ICP</button>
+        </form>
+
+        <!-- Resultado do ICP -->
+        <div id="icpResult" class="result">
+            <h2>Seu Perfil do Cliente Ideal (ICP):</h2>
+            <p id="resultText"></p>
+            <button id="generateMessageButton">Gerar Mensagem AIDA</button>
+            <button id="saveJsonButton">Salvar JSON</button>
+        </div>
+
+        <!-- Mensagem AIDA Gerada -->
+        <div id="messageResult" class="message">
+            <h2>Mensagem AIDA Personalizada:</h2>
+            <p id="messageText"></p>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript (Funcionalidade do Formulário)
+        document.getElementById('icpForm').addEventListener('submit', function (e) {
+            e.preventDefault(); // Impede o envio do formulário
+
+            // Coleta os dados do formulário
+            const businessType = document.getElementById('businessType').value;
+            const decisionMaker = document.getElementById('decisionMaker').value;
+            const companySize = document.getElementById('companySize').value;
+            const location = document.getElementById('location').value;
+            const businessGoal = document.getElementById('businessGoal').value;
+            const solutions = document.getElementById('solutions').value;
+            const financialResult = document.getElementById('financialResult').value;
+
+            // Gera o texto do ICP sem repetições
+            const icpText = `
+                <strong>Tipo de Negócio:</strong> ${businessType}<br>
+                <strong>Cargo do Tomador de Decisão:</strong> ${decisionMaker}<br>
+                <strong>Tamanho da Empresa:</strong> ${companySize}<br>
+                <strong>Localização/Região:</strong> ${location}<br>
+                <strong>Objetivo do Negócio:</strong> ${businessGoal}<br>
+                <strong>Soluções Necessárias:</strong> ${solutions}<br>
+                <strong>Resultado Financeiro Desejado:</strong> ${financialResult}<br><br>
+                <strong>Descrição do ICP:</strong><br>
+                Trabalhamos com <strong>${businessType}</strong>, focando em <strong>${decisionMaker}</strong> que gerenciam operações ou tecnologia em empresas de <strong>${companySize}</strong> na <strong>${location}</strong>. 
+                Esses líderes buscam <strong>${businessGoal}</strong> e precisam de soluções como <strong>${solutions}</strong> para alcançar <strong>${financialResult}</strong>.
+            `;
+
+            // Exibe o resultado
+            document.getElementById('resultText').innerHTML = icpText;
+            document.getElementById('icpResult').style.display = 'block';
+        });
+
+        // Gerar Mensagem AIDA
+        document.getElementById('generateMessageButton').addEventListener('click', function () {
+            // Coleta os dados do formulário novamente
+            const businessType = document.getElementById('businessType').value;
+            const decisionMaker = document.getElementById('decisionMaker').value;
+            const companySize = document.getElementById('companySize').value;
+            const location = document.getElementById('location').value;
+            const businessGoal = document.getElementById('businessGoal').value;
+            const solutions = document.getElementById('solutions').value;
+            const financialResult = document.getElementById('financialResult').value;
+
+            // Gera a mensagem AIDA
+            const aidaMessage = `
+                *Atenção (Attention):*
+                Descubra como a nossa plataforma pode transformar a gestão do seu negócio e aumentar sua produtividade em poucos cliques!
+
+                *Interesse (Interest):*
+                Com ferramentas de ${solutions.toLowerCase()}, você pode ${businessGoal.toLowerCase()} de forma simples e eficiente. Imagine ${financialResult.toLowerCase()} enquanto melhora a experiência do usuário.
+
+                *Desejo (Desire):*
+                Empresas de ${businessType.toLowerCase()} como a sua já estão utilizando nossa solução para alcançar resultados incríveis. Não fique para trás!
+
+                *Ação (Action):*
+                Solicite uma demonstração gratuita hoje mesmo e veja como podemos ajudar o seu negócio a alcançar ${financialResult.toLowerCase()}. Clique no botão abaixo para agendar sua demo!
+            `;
+
+            // Exibe a mensagem AIDA
+            document.getElementById('messageText').textContent = aidaMessage;
+            document.getElementById('messageResult').style.display = 'block';
+        });
+
+        // Salvar JSON
+        document.getElementById('saveJsonButton').addEventListener('click', function () {
+            // Coleta os dados do formulário
+            const businessType = document.getElementById('businessType').value;
+            const decisionMaker = document.getElementById('decisionMaker').value;
+            const companySize = document.getElementById('companySize').value;
+            const location = document.getElementById('location').value;
+            const businessGoal = document.getElementById('businessGoal').value;
+            const solutions = document.getElementById('solutions').value;
+            const financialResult = document.getElementById('financialResult').value;
+
+            // Cria o objeto JSON
+            const icpData = {
+                businessType,
+                decisionMaker,
+                companySize,
+                location,
+                businessGoal,
+                solutions,
+                financialResult
+            };
+
+            // Converte para JSON
+            const jsonData = JSON.stringify(icpData, null, 2);
+
+            // Cria o nome do arquivo
+            const fileName = ICP_${businessType.replace(/ /g, "_")}.json;
+
+            // Cria um link para download
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        // Carregar JSON
+        document.getElementById('loadJsonButton').addEventListener('click', function () {
+            // Cria um input de arquivo
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+
+            // Quando um arquivo é selecionado
+            input.addEventListener('change', function () {
+                const file = input.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const jsonData = JSON.parse(e.target.result);
+
+                        // Preenche o formulário com os dados do JSON
+                        document.getElementById('businessType').value = jsonData.businessType;
+                        document.getElementById('decisionMaker').value = jsonData.decisionMaker;
+                        document.getElementById('companySize').value = jsonData.companySize;
+                        document.getElementById('location').value = jsonData.location;
+                        document.getElementById('businessGoal').value = jsonData.businessGoal;
+                        document.getElementById('solutions').value = jsonData.solutions;
+                        document.getElementById('financialResult').value = jsonData.financialResult;
+
+                        // Gera o ICP automaticamente
+                        document.getElementById('icpForm').dispatchEvent(new Event('submit'));
+                    };
+                    reader.readAsText(file);
+                }
+            });
+
+            input.click();
+        });
+    </script>
+</body>
+</html>
